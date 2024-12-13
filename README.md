@@ -3,7 +3,7 @@
 ## Project Outline
 TODO
 
-## 팀원
+## Members
 - **Gibeom Kwon**(kwonrjatk@unist.ac.kr)
 - **Juwon Kim**(juwona@unist.ac.kr)
 

@@ -1,11 +1,11 @@
 check_prop: 0.01
 epochs: 200
 device: cuda:4
-model_name: binary-general-multihead
 # setting1: General Attention + Multihead Attention
 # forecasting
 data_name: stocknet
-model_save_path: ./checkpoints/${data_name}/${model_name}.pt
+model_name: setting1
+model_save_path: ./checkpoints/${data_name}/good/${model_name}.pt
 
 ddp:
   kwargs:
@@ -19,12 +19,14 @@ wandb:
     name: ${data_name}/${model_name}
 
 dataset:
-  window_size: 30
+  window_size: 40
   forecast_size: 10
   min_sents: 2
   max_sents: 5
   min_words: 10
   max_words: 20
+  train_prop: 0.7
+  val_prop: 0.9
 
 dataloader:
   train:
@@ -54,9 +56,10 @@ model:
   forecast_size: ${dataset.forecast_size}
   ts_feature_num: 2
   embed_dim: 768
-  hidden_dim: 256
+  hidden_dim: 512
   roberta_pretrained_path: cardiffnlp/twitter-roberta-base-sentiment-latest
   dropout: 0.1
+  num_classes: 4
 
   loss_kwargs: {}
   val_loss_kwargs:

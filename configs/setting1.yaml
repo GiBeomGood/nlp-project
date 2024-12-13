@@ -1,10 +1,10 @@
 check_prop: 0.01
 epochs: 200
 device: cuda:4
-model_name: binary-general-multihead
 # setting1: General Attention + Multihead Attention
 # forecasting
 data_name: stocknet
+model_name: setting1
 model_save_path: ./checkpoints/${data_name}/${model_name}.pt
 
 ddp:
@@ -20,11 +20,13 @@ wandb:
 
 dataset:
   window_size: 30
-  forecast_size: 10
+  forecast_size: 5
   min_sents: 2
   max_sents: 5
   min_words: 10
-  max_words: 20
+  max_words: 15
+  train_prop: 0.7
+  val_prop: 0.9
 
 dataloader:
   train:
@@ -46,19 +48,22 @@ dataloader:
     pin_memory: true
 
 early_stopping:
-  val_key: val acc
-  tolerance: 20
-  higher_better: true
+  val_key: val loss
+  tolerance: 10
+  higher_better: false
 
 model:
   forecast_size: ${dataset.forecast_size}
   ts_feature_num: 2
   embed_dim: 768
-  hidden_dim: 256
+  hidden_dim: 64
+  do_kw_attention: true
   roberta_pretrained_path: cardiffnlp/twitter-roberta-base-sentiment-latest
-  dropout: 0.1
+  dropout: 0.3
+  num_classes: 4
 
-  loss_kwargs: {}
+  loss_kwargs:
+    weight: [0.35, 0.15, 0.15, 0.35]
   val_loss_kwargs:
     reduction: sum
 
@@ -73,14 +78,19 @@ model:
     query_dim: ${model.hidden_dim}
     key_dim: ${model.hidden_dim}
     dropout: ${model.dropout}
-    weight_kind: tanh
+    weight_kind: softmax
 
   context_keyword_attention:
-    kind: multihead
-    embed_dim: ${model.hidden_dim}
-    num_heads: 4
+    # kind: multihead
+    # embed_dim: ${model.hidden_dim}
+    # num_heads: 4
+    # dropout: ${model.dropout}
+    # weight_kind: tanh
+    kind: general
+    query_dim: ${model.hidden_dim}
+    key_dim: ${model.hidden_dim}
     dropout: ${model.dropout}
-    weight_kind: softmax
+    weight_kind: tanh
 
 optimizer:
   lr: 0.001

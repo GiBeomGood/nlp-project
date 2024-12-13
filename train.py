@@ -71,7 +71,7 @@ def train(
 
     for epoch in range(config.epochs):
         pbar, train_metrics = train_loop(model, train_loader, optimizer, epoch, check_unit)
-        val_metrics = val_loop(model, val_loader)
+        val_metrics = val_loop(model, val_loader, kind="val")
         postfix = pbar_finish(pbar, train_metrics, val_metrics)
 
         if config.wandb.do is True:
@@ -94,12 +94,12 @@ def train(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config-path", type=str, default="./configs/config.yaml")
+    parser.add_argument("--config-path", type=str)
     args = parser.parse_args()
 
     model_type = MyModel
     config = OmegaConf.load(args.config_path)
     train_set = StockNetDataset("train", config.dataset)
-    val_set = StockNetDataset("val", config.dataset)
+    val_set = StockNetDataset("test", config.dataset)
     print("All settings are done. Start training.\n")
     train(model_type, config, train_set, val_set)

@@ -19,6 +19,7 @@ def test(model: Type[BaseModel], config: DictConfig, test_set: Dataset):
     model: BaseModel
     model = model(config.model).to(config.device)
     model.load_state_dict(torch.load(config.model_save_path, weights_only=True))
+    model.requires_grad_(False)
     print()
 
     test_metrics = val_loop(model, test_loader, kind="test")
