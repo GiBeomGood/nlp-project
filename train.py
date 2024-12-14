@@ -100,6 +100,6 @@ if __name__ == "__main__":
     model_type = MyModel
     config = OmegaConf.load(args.config_path)
     train_set = StockNetDataset("train", config.dataset)
-    val_set = StockNetDataset("test", config.dataset)
+    val_set = StockNetDataset("val", config.dataset)
     print("All settings are done. Start training.\n")
     train(model_type, config, train_set, val_set)
